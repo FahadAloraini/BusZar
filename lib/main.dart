@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:testing_phase1/screens/search_screen.dart';
 
 import 'package:testing_phase1/screens/welcome_screen.dart';
 import 'package:testing_phase1/screens/login_screen.dart';
@@ -24,6 +25,7 @@ class FlashChat extends StatelessWidget {
         LoginScreen.id: (context) => LoginScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),
         HomeScreen.id: (context) => HomeScreen(),
+        SearchScreen.id: (context) => SearchScreen(),
       },
     );
   }

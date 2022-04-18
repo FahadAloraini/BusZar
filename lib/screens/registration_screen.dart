@@ -21,7 +21,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool showSpinner = false;
   late String email;
   late String password;
+  late String Name;
+
   String errormass = "";
+
+  List<String> addsearchName(PName) {
+    List<String> TempArray = [];
+    for (var i = 0; i < PName.toString().length; i++) {
+      TempArray.add(PName.toString().substring(0, i));
+    }
+    return TempArray;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +70,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               TextField(
                 textAlign: TextAlign.center,
                 onChanged: (value) {
-                  //password = value;
+                  Name = value;
                 },
-                decoration: kTextFieldDecoration.copyWith(
-                    hintText: 'First Name (optional)'),
+                decoration: kTextFieldDecoration.copyWith(hintText: 'Name'),
               ),
               SizedBox(
                 height: 8.0,
@@ -126,10 +135,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         email: email, password: password);
                     if (newUser != null) {
                       Fprofile.add({
-                        'Fname': email,
-                        'Lname': 'there',
-                        'phone': '1234',
+                        'Email': email,
+                        'Password': password,
+                        'name': Name,
+                        'SearchName': addsearchName(Name),
                       });
+
                       Navigator.pushNamed(context, HomeScreen.id);
                     }
 

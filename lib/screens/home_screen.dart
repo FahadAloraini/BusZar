@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:testing_phase1/screens/search_screen.dart';
 import 'login_screen.dart';
 import 'registration_screen.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -43,6 +44,12 @@ class _HomeScreenState extends State<HomeScreen>
       appBar: AppBar(
         title: Text("HomePage"),
         backgroundColor: Colors.deepPurple,
+        actions: [
+          // Navigate to the Search Screen
+          IconButton(
+              onPressed: () => Navigator.pushNamed(context, SearchScreen.id),
+              icon: Icon(Icons.search))
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
