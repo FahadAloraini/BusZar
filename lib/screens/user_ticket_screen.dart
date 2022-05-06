@@ -11,21 +11,19 @@ import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class SearchScreen extends StatefulWidget {
-  static const String id = 'search_screen';
+class UserTicket extends StatefulWidget {
+  static const String id = 'user_ticket_screen';
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<SearchScreen>
+class _HomeScreenState extends State<UserTicket>
     with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation animation;
-  late String TypedSearch = "";
-  late String IDNumber;
-  late String IDData;
   var _controller = TextEditingController();
+  var Tickets = [];
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late User loggedInUser;
@@ -67,44 +65,13 @@ class _HomeScreenState extends State<SearchScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          // The search area here
-          backgroundColor: Colors.deepPurple,
-          title: Container(
-            width: double.infinity,
-            height: 40,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(5)),
-            child: Center(
-              child: TextField(
-                controller: _controller,
-                decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.clear),
-                      onPressed: () {
-                        _controller.clear();
-                        TypedSearch = "";
-                      },
-                    ),
-                    hintText: 'Search...',
-                    border: InputBorder.none),
-                onChanged: (value) {
-                  setState(() {
-                    TypedSearch = value;
-                    print(TypedSearch);
-                  });
-                },
-              ),
-            ),
-          )),
       body: StreamBuilder<QuerySnapshot>(
-        stream: (TypedSearch != "" && TypedSearch != null)
+        stream: (loggedInUser.email != null)
             ? FirebaseFirestore.instance
-                .collection('Ticket')
-                .where("Destination", arrayContains: TypedSearch)
+                .collection('Profile')
+                .where("Email", isEqualTo: loggedInUser.email.toString())
                 .snapshots()
-            : FirebaseFirestore.instance.collection("Ticket").snapshots(),
+            : FirebaseFirestore.instance.collection("Profile").snapshots(),
         builder: (context, snapshot) {
           return (snapshot.connectionState == ConnectionState.waiting)
               ? Center(child: CircularProgressIndicator())

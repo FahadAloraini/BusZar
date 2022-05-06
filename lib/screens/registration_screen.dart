@@ -22,6 +22,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   late String email;
   late String password;
   late String Name;
+  late List Ticket = [];
 
   String errormass = "";
 
@@ -139,8 +140,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         'Password': password,
                         'name': Name,
                         'SearchName': addsearchName(Name),
+                        'Ticket': Ticket,
                       });
-
                       Navigator.pushNamed(context, HomeScreen.id);
                     }
 
