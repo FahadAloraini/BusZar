@@ -20,10 +20,15 @@ class UserTicket extends StatefulWidget {
 
 class _HomeScreenState extends State<UserTicket>
     with SingleTickerProviderStateMixin {
+  CollectionReference FUserTicket =
+      FirebaseFirestore.instance.collection("UserTicket");
+
   late AnimationController controller;
   late Animation animation;
+  late String TypedSearch = "";
+  late String IDNumber;
+  late String IDData;
   var _controller = TextEditingController();
-  var Tickets = [];
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late User loggedInUser;
@@ -65,13 +70,44 @@ class _HomeScreenState extends State<UserTicket>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          // The search area here
+          backgroundColor: Colors.deepPurple,
+          title: Container(
+            width: double.infinity,
+            height: 40,
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(5)),
+            child: Center(
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.clear),
+                      onPressed: () {
+                        _controller.clear();
+                        TypedSearch = "";
+                      },
+                    ),
+                    hintText: 'Search...',
+                    border: InputBorder.none),
+                onChanged: (value) {
+                  setState(() {
+                    TypedSearch = value;
+                    print(TypedSearch);
+                  });
+                },
+              ),
+            ),
+          )),
       body: StreamBuilder<QuerySnapshot>(
-        stream: (loggedInUser.email != null)
+        stream: (TypedSearch != "" && TypedSearch != null)
             ? FirebaseFirestore.instance
-                .collection('Profile')
-                .where("Email", isEqualTo: loggedInUser.email.toString())
+                .collection('UserTicket')
+                .where("Destination", isEqualTo: TypedSearch)
                 .snapshots()
-            : FirebaseFirestore.instance.collection("Profile").snapshots(),
+            : FirebaseFirestore.instance.collection("UserTicket").snapshots(),
         builder: (context, snapshot) {
           return (snapshot.connectionState == ConnectionState.waiting)
               ? Center(child: CircularProgressIndicator())
@@ -166,10 +202,16 @@ class _HomeScreenState extends State<UserTicket>
                                   iconColor: Colors.grey,
                                 ),
                                 IconsButton(
-                                  onPressed: () {},
-                                  text: 'Confirm',
-                                  iconData: Icons.add_location,
-                                  color: Colors.deepPurpleAccent,
+                                  onPressed: () {
+                                    FirebaseFirestore.instance
+                                        .collection("UserTicket")
+                                        .doc(data.id)
+                                        .delete();
+                                    Navigator.of(context).pop();
+                                  },
+                                  text: 'Delete',
+                                  iconData: Icons.delete,
+                                  color: Colors.redAccent,
                                   textStyle: TextStyle(color: Colors.white),
                                   iconColor: Colors.white,
                                 ),
