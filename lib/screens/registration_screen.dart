@@ -136,11 +136,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         email: email, password: password);
                     if (newUser != null) {
                       Fprofile.add({
-                        'Email': email,
+                        'Email': email.toLowerCase(),
                         'Password': password,
                         'name': Name,
-                        'SearchName': addsearchName(Name),
-                        'Ticket': Ticket,
+                        //'SearchName': addsearchName(Name),
+                        // 'Ticket': Ticket,
                       });
                       Navigator.pushNamed(context, HomeScreen.id);
                     }

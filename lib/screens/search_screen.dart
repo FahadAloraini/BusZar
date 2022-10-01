@@ -20,6 +20,7 @@ class SearchScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<SearchScreen>
     with SingleTickerProviderStateMixin {
+  CollectionReference FTicket = FirebaseFirestore.instance.collection("Ticket");
   late AnimationController controller;
   late Animation animation;
   late String TypedSearch = "";
@@ -102,10 +103,10 @@ class _HomeScreenState extends State<SearchScreen>
         stream: (TypedSearch != "" && TypedSearch != null)
             ? FirebaseFirestore.instance
                 .collection('Ticket')
-                .where("Destination", arrayContains: TypedSearch)
+                .where("Destination", isEqualTo: TypedSearch)
                 .snapshots()
             : FirebaseFirestore.instance.collection("Ticket").snapshots(),
-        builder: (context, snapshot) {
+        builder: (context, AsyncSnapshot snapshot) {
           return (snapshot.connectionState == ConnectionState.waiting)
               ? Center(child: CircularProgressIndicator())
               : ListView.builder(
@@ -144,7 +145,7 @@ class _HomeScreenState extends State<SearchScreen>
                                       ),
                                       Text(
                                         "Boarding Location: " +
-                                            data['Location '],
+                                            data['Location'],
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
@@ -183,10 +184,10 @@ class _HomeScreenState extends State<SearchScreen>
                                   ),
                                 ),
                               ),
-                              // msg: data['Location '] +
-                              //     ' to ' +
-                              //     data['Destination'],
-                              //title: 'Confirm',
+                              msg: data['Location'] +
+                                  ' to ' +
+                                  data['Destination'],
+                              title: '',
                               context: context,
                               actions: [
                                 IconsOutlineButton(
@@ -199,7 +200,9 @@ class _HomeScreenState extends State<SearchScreen>
                                   iconColor: Colors.grey,
                                 ),
                                 IconsButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    // confirm
+                                  },
                                   text: 'Confirm',
                                   iconData: Icons.add_location,
                                   color: Colors.deepPurpleAccent,
@@ -233,7 +236,7 @@ class _HomeScreenState extends State<SearchScreen>
                                 ),
                                 Text(
                                   "Boarding Location: " +
-                                      data['Location '].toString(),
+                                      data['Location'].toString(),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(

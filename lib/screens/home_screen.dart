@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:testing_phase1/screens/profile_screen.dart';
 import 'package:testing_phase1/screens/search_screen.dart';
 import 'package:dot_navigation_bar/dot_navigation_bar.dart';
+import 'package:testing_phase1/screens/user_ticket_screen.dart';
 import 'login_screen.dart';
 import 'registration_screen.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -28,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen>
   void _handleIndexChanged(int i) {
     setState(() {
       _selectedTab = _SelectedTab.values[i];
+      i == 1 ? Navigator.pushNamed(context, UserTicket.id) : null;
       i == 2 ? Navigator.pushNamed(context, SearchScreen.id) : null;
       i == 3 ? Navigator.pushNamed(context, ProfileScreen.id) : null;
       print(i);
@@ -125,4 +127,4 @@ class _HomeScreenState extends State<HomeScreen>
   }
 }
 
-enum _SelectedTab { home, favorite, search, person }
+enum _SelectedTab { home, UserTicket, search, person }
