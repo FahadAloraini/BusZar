@@ -1,34 +1,36 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'login_screen.dart';
 import 'registration_screen.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:testing_phase1/components/rounded_button.dart';
+import 'package:testing_phase1/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:testing_phase1/components/PopUp.dart';
+//import 'package:testing_phase1/components/PopUp.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 import 'package:material_dialogs/widgets/buttons/icon_button.dart';
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class UserTicket extends StatefulWidget {
-  static const String id = 'user_ticket_screen';
+class HistoryScreen extends StatefulWidget {
+  static const String id = 'history_screen';
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<UserTicket>
+class _HomeScreenState extends State<HistoryScreen>
     with SingleTickerProviderStateMixin {
-  CollectionReference FUserTicket =
-      FirebaseFirestore.instance.collection("UserTicket");
-
   late AnimationController controller;
   late Animation animation;
   late String TypedSearch = "";
   late String IDNumber;
   late String IDData;
   var _controller = TextEditingController();
+  late String Desc;
+  late String Report;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late User loggedInUser;
@@ -46,6 +48,9 @@ class _HomeScreenState extends State<UserTicket>
       print(e);
     }
   }
+
+  CollectionReference FUserTicket =
+      FirebaseFirestore.instance.collection("History");
 
   @override
   void initState() {
@@ -104,10 +109,10 @@ class _HomeScreenState extends State<UserTicket>
       body: StreamBuilder<QuerySnapshot>(
         stream: (TypedSearch != "" && TypedSearch != null)
             ? FirebaseFirestore.instance
-                .collection('UserTicket')
+                .collection("History")
                 .where("Destination", isEqualTo: TypedSearch)
                 .snapshots()
-            : FirebaseFirestore.instance.collection("UserTicket").snapshots(),
+            : FirebaseFirestore.instance.collection("History").snapshots(),
         builder: (context, snapshot) {
           return (snapshot.connectionState == ConnectionState.waiting)
               ? Center(child: CircularProgressIndicator())
@@ -203,18 +208,87 @@ class _HomeScreenState extends State<UserTicket>
                                 ),
                                 IconsButton(
                                   onPressed: () {
-                                    FirebaseFirestore.instance
-                                        .collection("UserTicket")
-                                        .doc(data.id)
-                                        .delete();
-                                    Navigator.of(context).pop();
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                              title: Text(
+                                                  "Enter description of the item"),
+                                              content: TextField(
+                                                decoration: kTextFieldDecoration
+                                                    .copyWith(hintText: 'Here'),
+                                                onChanged: (value) {
+                                                  Desc = value;
+                                                },
+                                              ),
+                                              actions: [
+                                                RoundedButton(
+                                                  title: 'Submit',
+                                                  colour: Colors.deepPurple,
+                                                  onPressed: (() {
+                                                    FirebaseFirestore.instance
+                                                        .collection(
+                                                            'ReportItem')
+                                                        .add({
+                                                      'Email': loggedInUser
+                                                          .email
+                                                          .toString(),
+                                                      'TicketNumber':
+                                                          data['TicketNumber'],
+                                                      'Description': Desc
+                                                    });
+                                                    Navigator.of(context).pop();
+                                                  }),
+                                                )
+                                              ],
+                                            ));
                                   },
-                                  text: 'Delete',
-                                  iconData: Icons.delete,
+                                  text: 'Report a lost item',
+                                  iconData: Icons.report,
                                   color: Colors.redAccent,
                                   textStyle: TextStyle(color: Colors.white),
                                   iconColor: Colors.white,
                                 ),
+                                IconsButton(
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                              title: Text(
+                                                  "Enter what you want to tell us"),
+                                              content: TextField(
+                                                decoration: kTextFieldDecoration
+                                                    .copyWith(hintText: 'Here'),
+                                                onChanged: (value) {
+                                                  Report = value;
+                                                },
+                                              ),
+                                              actions: [
+                                                RoundedButton(
+                                                  title: 'Submit',
+                                                  colour: Colors.deepPurple,
+                                                  onPressed: (() {
+                                                    FirebaseFirestore.instance
+                                                        .collection('Report')
+                                                        .add({
+                                                      'Email': loggedInUser
+                                                          .email
+                                                          .toString(),
+                                                      'TicketNumber':
+                                                          data['TicketNumber'],
+                                                      'Report': Report
+                                                    });
+                                                    Navigator.of(context).pop();
+                                                  }),
+                                                )
+                                              ],
+                                            ));
+                                  },
+                                  text: 'Report',
+                                  iconData: Icons.report,
+                                  color: Colors.redAccent,
+                                  textStyle: TextStyle(color: Colors.white),
+                                  iconColor: Colors.white,
+                                )
                               ]);
                         },
                         child: Card(

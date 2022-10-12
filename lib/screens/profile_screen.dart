@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:testing_phase1/components/rounded_button.dart';
 import 'package:testing_phase1/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:testing_phase1/screens/history_screen.dart';
 import 'package:testing_phase1/screens/home_screen.dart';
 import 'package:testing_phase1/screens/welcome_screen.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -150,6 +151,14 @@ class _ProfileScreen extends State<ProfileScreen> {
                                   title: 'Modify',
                                   colour: Colors.deepPurpleAccent,
                                   onPressed: () {},
+                                ),
+                                RoundedButton(
+                                  title: 'History',
+                                  colour: Colors.deepPurpleAccent,
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, HistoryScreen.id);
+                                  },
                                 ),
                                 RoundedButton(
                                   title: 'Sign Out',

@@ -202,6 +202,26 @@ class _HomeScreenState extends State<SearchScreen>
                                 IconsButton(
                                   onPressed: () {
                                     // confirm
+                                    FirebaseFirestore.instance
+                                        .collection('History')
+                                        .add({
+                                      'Email': loggedInUser.email.toString(),
+                                      'TicketNumber': data['Number'],
+                                      'Destination': data['Destination'],
+                                      'Location': data['Location'],
+                                      'Price': data['Price'],
+                                      'Time': data['Time'],
+                                    });
+                                    FirebaseFirestore.instance
+                                        .collection('UserTicket')
+                                        .add({
+                                      'Email': loggedInUser.email.toString(),
+                                      'TicketNumber': data['Number'],
+                                      'Destination': data['Destination'],
+                                      'Location': data['Location'],
+                                      'Price': data['Price'],
+                                      'Time': data['Time'],
+                                    });
                                   },
                                   text: 'Confirm',
                                   iconData: Icons.add_location,
