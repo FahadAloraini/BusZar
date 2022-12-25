@@ -1,0 +1,71 @@
+{
+    "homePage": "الصفحة الرئيسية",
+    "search": "البحث",
+    "destination": "الوجهة: ",
+    "boardingLocation": "محطة الوصول: ",
+    "time": "الوقت: ",
+    "price": "السعر: ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "to": "إلى",
+    "modify": "تعديل الملف الشخصي",
+    "signOut": "تسجيل الخروج",
+    "language": "اللغة",
+    "darkMode": "الوضع الليلي",
+    "notification": "التنبيهات",
+    "arabic": "اللغة العربية",
+    "login": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "register": "إنشاء حساب",
+    "name": "الاسم الأول",
+    "lastName": "الاسم الأخير",
+    "phoneNumber": "رقم الجوال",
+    "email": "البريد الالكتروني",
+    "password": "الرقم السري",
+    "enterYour": "ادخل ",
+    "optional": "(اختياري)",
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "languageCode": "العربية",
+    "trips": "الرحلات",
+    "driver": "السائق",
+    "wallet": "المحفظة",
+    "history": "التاريخ",
+    "triphistory": "تاريخ الرحلات",
+    "ratethedriver": "قيم السائق",
+    "report": "شكاوى",
+    "whatseemstobetheproblem": "كيف نستطيع خدمتك؟",
+    "missingitem": "مفقودات",
+    "complaintreport": "شكاوى",
+    "howcanwehelp": "كيف نستطيع خدمتكم؟",
+    "problemdescription": "وصف الشكوى",
+    "tellusabouttheproblem": "اخبرنا كيف نستطيع خدمتكم",
+    "submit": "ارسال",
+    "writeadescriptionabouttheitem": "الرجاء كتابة وصف المفقودات",
+    "itemdescription": "مواصفات المفقودات",
+    "currentwallet": "المحفظة",
+    "voucher": "قسيمة",
+    "oryoucanuse": "او يمكنك استعمال",
+    "searchsetdropofflocation": "ابحث وضع نقطة وصول",
+    "searchhere": "ابحث هنا...",
+    "from": "من",
+    "to": "الى",
+    "selectadriver": "اختر السائق",
+    "nearestonlinedrivers": "اقرب السائقين المتوفرين",
+    "thedriverwillarrivetothestationin": "السائق سيصل الى المحطة بعد: ",
+    "theticketwillbe": "التذكرة ستكلف:",
+    "thedurationoftheraid": "مدة الرحلة:",
+    "thedriverwillarrivetothestationin":"السائق سيصل الى المحطة في:",
+    "gotocheckout": "اذهب الى الحساب",
+    "chooseyourplan": "اختر طريقة الدفع"
+
+
+
+
+
+
+
+
+
+
+}

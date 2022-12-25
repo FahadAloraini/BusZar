@@ -6,6 +6,11 @@ import 'package:testing_phase1/screens/home_screen.dart';
 import 'package:testing_phase1/screens/welcome_screen.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../components/global.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -14,11 +19,50 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController emailtexteditingcontroller = TextEditingController();
+  TextEditingController passwordtexteditingcontroller = TextEditingController();
+
+  validateForm() {
+    if (!emailtexteditingcontroller.text.contains("@")) {
+      Fluttertoast.showToast(msg: "Email address is not Valid.");
+    } else if (passwordtexteditingcontroller.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Password is required.");
+    } else {
+      loginNow();
+    }
+  }
+
+  loginNow() async {
+    final User? firebaseUser = (await fAuth
+            .signInWithEmailAndPassword(
+      email: emailtexteditingcontroller.text.trim(),
+      password: passwordtexteditingcontroller.text.trim(),
+    )
+            .catchError((msg) {
+      Fluttertoast.showToast(msg: "Error: " + msg.toString());
+    }))
+        .user;
+
+    if (firebaseUser != null) {
+      DatabaseReference usersRef =
+          FirebaseDatabase.instance.ref().child("user");
+      usersRef.child(firebaseUser.uid).once().then((userKey) {
+        final snap = userKey.snapshot;
+        if (snap.value != null) {
+          currentFirebaseUser = firebaseUser;
+          Fluttertoast.showToast(msg: "Login Successful.");
+          Navigator.pushNamed(context, HomeScreen.id);
+        } else {
+          Fluttertoast.showToast(msg: "No record exist with this email.");
+          fAuth.signOut();
+        }
+      });
+    } else {
+      Fluttertoast.showToast(msg: "Error Occurred during Login.");
+    }
+  }
+
   bool showSpinner = false;
-  final _auth = FirebaseAuth.instance;
-  late String email;
-  late String password;
-  String errormass = "";
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +89,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: AnimatedTextKit(
                   animatedTexts: [
-                    WavyAnimatedText('Login', textAlign: TextAlign.center),
+                    WavyAnimatedText(AppLocalizations.of(context)!.login,
+                        textAlign: TextAlign.center),
                   ],
                   totalRepeatCount: 1,
                   // repeatForever: true,
@@ -57,11 +102,11 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 keyboardType: TextInputType.emailAddress,
                 textAlign: TextAlign.center,
-                onChanged: (value) {
-                  email = value;
-                },
-                decoration:
-                    kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
+                controller: emailtexteditingcontroller,
+                decoration: kTextFieldDecoration.copyWith(
+                    hintText: AppLocalizations.of(context)!.enterYour +
+                        " " +
+                        AppLocalizations.of(context)!.email),
               ),
               SizedBox(
                 height: 8.0,
@@ -69,29 +114,24 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 obscureText: true,
                 textAlign: TextAlign.center,
-                onChanged: (value) {
-                  password = value;
-                },
+                controller: passwordtexteditingcontroller,
                 decoration: kTextFieldDecoration.copyWith(
-                    hintText: 'Enter your password'),
+                    hintText: AppLocalizations.of(context)!.enterYour +
+                        " " +
+                        AppLocalizations.of(context)!.password),
               ),
               SizedBox(
                 height: 24.0,
               ),
               RoundedButton(
-                title: 'Log In',
+                title: AppLocalizations.of(context)!.login,
                 colour: Colors.deepPurpleAccent,
                 onPressed: () async {
                   setState(() {
                     showSpinner = true;
                   });
                   try {
-                    final user = await _auth.signInWithEmailAndPassword(
-                        email: email, password: password);
-                    if (user != null) {
-                      Navigator.pushNamed(context, HomeScreen.id);
-                    }
-
+                    validateForm();
                     setState(() {
                       showSpinner = false;
                     });
@@ -99,17 +139,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     print(e);
                     setState(() {
                       showSpinner = false;
-                      errormass = e.toString();
                     });
                   }
                 },
-              ),
-              Text(
-                errormass,
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.red,
-                ),
               ),
             ],
           ),

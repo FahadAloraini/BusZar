@@ -29,6 +29,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations: # Add this line
+    sdk: flutter
+  intl: ^0.17.0
+  shared_preferences: ^2.0.15
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -42,9 +46,11 @@ dev_dependencies:
 
   cupertino_icons: ^1.0.4
   animated_text_kit: ^4.2.1
-  firebase_core: ^1.24.0
-  firebase_auth: ^3.11.0
-  cloud_firestore: ^3.5.0
+  firebase_core: ^2.2.0
+  firebase_auth: ^4.1.2
+  firebase_database: ^10.0.5
+  cloud_firestore: ^4.0.5
+  fluttertoast: ^8.1.1
   modal_progress_hud_nsn: ^0.1.0-nullsafety-1
   dot_navigation_bar: ^1.0.1+4
   material_dialogs: ^1.1.1
@@ -54,6 +60,19 @@ dev_dependencies:
   location: ^4.4.0
   flutter_svg: ^1.1.5
   dio: ^4.0.6
+  geolocator: ^9.0.2
+  http: ^0.13.5
+  provider: ^6.0.4
+  flutter_geofire: ^2.0.3
+  smooth_star_rating_nsafe: ^1.0.0+1
+  latlong: ^0.6.1
+  intl: ^0.17.0
+  maps_toolkit: ^2.0.1
+  font_awesome_flutter: ^10.2.1
+
+
+
+
 
 
 
@@ -69,6 +88,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
+  generate: true
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -76,8 +96,13 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - images/car.png
+    - images/origin.png
+    - images/destination.png
+    - images/Bus.png
+    - images/BusH.png
+    - images/Bus_Station.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

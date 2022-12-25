@@ -7,6 +7,10 @@ import 'package:testing_phase1/screens/welcome_screen.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:testing_phase1/components/global.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
@@ -15,24 +19,61 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  CollectionReference Fprofile =
-      FirebaseFirestore.instance.collection("Profile");
-  final _auth = FirebaseAuth.instance;
-  bool showSpinner = false;
-  late String email;
-  late String password;
-  late String Name;
-  late List Ticket = [];
+  TextEditingController nametexteditingcontroller = TextEditingController();
+  TextEditingController emailtexteditingcontroller = TextEditingController();
+  TextEditingController phonetexteditingcontroller = TextEditingController();
+  TextEditingController passwordtexteditingcontroller = TextEditingController();
 
-  String errormass = "";
-
-  List<String> addsearchName(PName) {
-    List<String> TempArray = [];
-    for (var i = 0; i < PName.toString().length; i++) {
-      TempArray.add(PName.toString().substring(0, i));
+  validateForm() {
+    if (nametexteditingcontroller.text.length < 3) {
+      Fluttertoast.showToast(msg: "name must be atleast 3 Characters.");
+    } else if (!emailtexteditingcontroller.text.contains("@")) {
+      Fluttertoast.showToast(msg: "Email address is not Valid.");
+    } else if (phonetexteditingcontroller.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Phone Number is required.");
+    } else if (passwordtexteditingcontroller.text.length < 6) {
+      Fluttertoast.showToast(msg: "Password must be atleast 6 Characters.");
+    } else {
+      saveInfoNow();
     }
-    return TempArray;
   }
+
+  saveInfoNow() async {
+    final User? firebaseUser = (await fAuth
+            .createUserWithEmailAndPassword(
+      email: emailtexteditingcontroller.text.trim(),
+      password: passwordtexteditingcontroller.text.trim(),
+    )
+            .catchError((msg) {
+      //Navigator.pop(context);
+      Fluttertoast.showToast(msg: "Error: " + msg.toString());
+    }))
+        .user;
+
+    if (firebaseUser != null) {
+      Map userMap = {
+        "id": firebaseUser.uid,
+        "name": nametexteditingcontroller.text.trim(),
+        "email": emailtexteditingcontroller.text.trim(),
+        "phone": phonetexteditingcontroller.text.trim(),
+        "wallet": "0",
+      };
+
+      DatabaseReference usersRef =
+          FirebaseDatabase.instance.ref().child("user");
+      usersRef.child(firebaseUser.uid).set(userMap);
+
+      currentFirebaseUser = firebaseUser;
+      Fluttertoast.showToast(msg: "Account has been Created.");
+      Navigator.pushNamed(context, HomeScreen.id);
+    } else {
+      Navigator.pop(context);
+      Fluttertoast.showToast(msg: "Account has not been Created.");
+    }
+  }
+
+  bool showSpinner = false;
+  late List Ticket = [];
 
   @override
   Widget build(BuildContext context) {
@@ -70,32 +111,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               TextField(
                 textAlign: TextAlign.center,
-                onChanged: (value) {
-                  Name = value;
-                },
-                decoration: kTextFieldDecoration.copyWith(hintText: 'Name'),
+                controller: nametexteditingcontroller,
+                decoration: kTextFieldDecoration.copyWith(
+                    hintText: AppLocalizations.of(context)!.enterYour +
+                        " " +
+                        AppLocalizations.of(context)!.name),
               ),
               SizedBox(
                 height: 8.0,
               ),
               TextField(
                 textAlign: TextAlign.center,
-                onChanged: (value) {
-                  //password = value;
-                },
+                keyboardType: TextInputType.phone,
+                controller: phonetexteditingcontroller,
                 decoration: kTextFieldDecoration.copyWith(
-                    hintText: 'Last Name (optional)'),
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              TextField(
-                textAlign: TextAlign.center,
-                onChanged: (value) {
-                  //password = value;
-                },
-                decoration: kTextFieldDecoration.copyWith(
-                    hintText: 'Phone Number (optional)'),
+                    hintText: AppLocalizations.of(context)!.enterYour +
+                        " " +
+                        AppLocalizations.of(context)!.phoneNumber),
               ),
               SizedBox(
                 height: 48.0,
@@ -103,11 +135,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               TextField(
                 keyboardType: TextInputType.emailAddress,
                 textAlign: TextAlign.center,
-                onChanged: (value) {
-                  email = value;
-                },
-                decoration:
-                    kTextFieldDecoration.copyWith(hintText: 'Enter your email'),
+                controller: emailtexteditingcontroller,
+                decoration: kTextFieldDecoration.copyWith(
+                    hintText: AppLocalizations.of(context)!.enterYour +
+                        " " +
+                        AppLocalizations.of(context)!.email),
               ),
               SizedBox(
                 height: 8.0,
@@ -115,35 +147,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               TextField(
                 obscureText: true,
                 textAlign: TextAlign.center,
-                onChanged: (value) {
-                  password = value;
-                },
+                controller: passwordtexteditingcontroller,
                 decoration: kTextFieldDecoration.copyWith(
-                    hintText: 'Enter your password'),
+                    hintText: AppLocalizations.of(context)!.enterYour +
+                        " " +
+                        AppLocalizations.of(context)!.password),
               ),
               SizedBox(
                 height: 24.0,
               ),
               RoundedButton(
-                title: 'Register',
+                title: AppLocalizations.of(context)!.register,
                 colour: Colors.deepPurple,
                 onPressed: () async {
                   setState(() {
                     showSpinner = true;
                   });
                   try {
-                    final newUser = await _auth.createUserWithEmailAndPassword(
-                        email: email, password: password);
-                    if (newUser != null) {
-                      Fprofile.add({
-                        'Email': email.toLowerCase(),
-                        'Password': password,
-                        'name': Name,
-                        //'SearchName': addsearchName(Name),
-                        // 'Ticket': Ticket,
-                      });
-                      Navigator.pushNamed(context, HomeScreen.id);
-                    }
+                    validateForm();
 
                     setState(() {
                       showSpinner = false;
@@ -152,17 +173,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     print(e);
                     setState(() {
                       showSpinner = false;
-                      errormass = e.toString();
                     });
                   }
                 },
-              ),
-              Text(
-                errormass,
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Colors.red,
-                ),
               ),
             ],
           ),

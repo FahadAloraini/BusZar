@@ -1,4 +1,10 @@
+import 'dart:async';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:flutter/material.dart';
+import 'package:testing_phase1/screens/home_screen.dart';
+import '../components/assistant_methods.dart';
+import '../components/global.dart';
 import 'login_screen.dart';
 import 'registration_screen.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -16,9 +22,27 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   late AnimationController controller;
   late Animation animation;
 
+  startTimer() {
+    fAuth.currentUser != null
+        ? AssistantMethods.readCurrentOnlineUserInfo()
+        : null;
+
+    Timer(const Duration(seconds: 3), () async {
+      if (await fAuth.currentUser != null) {
+        currentFirebaseUser = fAuth.currentUser;
+        Navigator.push(
+            context, MaterialPageRoute(builder: (c) => HomeScreen()));
+      } else {
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (c) => LoginScreen()));
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    startTimer();
 
     controller =
         AnimationController(duration: Duration(seconds: 1), vsync: this);
@@ -70,14 +94,14 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               height: 48.0,
             ),
             RoundedButton(
-              title: 'Log In',
+              title: AppLocalizations.of(context)!.login,
               colour: Colors.deepPurpleAccent,
               onPressed: () {
                 Navigator.pushNamed(context, LoginScreen.id);
               },
             ),
             RoundedButton(
-              title: 'Register',
+              title: AppLocalizations.of(context)!.register,
               colour: Colors.deepPurple,
               onPressed: () {
                 Navigator.pushNamed(context, RegistrationScreen.id);
